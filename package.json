@@ -1,18 +1,26 @@
 {
-  "name": "dirvhost",
-  "version": "0.0.2",
-  "decription": "Serves all projects from a directory as static vhosts",
-  "homepage": "https://github.com/szywon/dirvhost",
-  "bugs": "https://github.com/szywon/dirvhost/issues",
-  "bin": "./dirvhost.js",
-  "main": "./dirvhost.js",
-  "files": "./dirvhost.js",
+  "name":         "dirvhost",
+  "version":      "0.0.3",
+  "decription":   "Serves all projects from a directory as static vhosts",
+  "homepage":     "https://github.com/szywon/dirvhost",
+  "bugs":         "https://github.com/szywon/dirvhost/issues",
+  "bin":          "./dirvhost.js",
+  "main":         "./dirvhost.js",
+  "files":        "./dirvhost.js",
   "dependencies": {
     "connect": "2.x"
   },
   "author": {
-    "name": "Szymon Witamborski",
+    "name":  "Szymon Witamborski",
     "email": "szywon@g.pl",
-    "url": "http://szywon.pl"
-  }
+    "url":   "http://szywon.pl"
+  },
+  "repository": {
+    "type": "git",
+    "url":  "https://github.com/szywon/dirvhost.git"
+  },
+  "keywords": [
+    "vhost",
+    "static"
+  ]
 }

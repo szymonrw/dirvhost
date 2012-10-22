@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+'use strict';
 
 var connect = require('connect');
 var http    = require('http');

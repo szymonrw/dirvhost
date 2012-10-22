@@ -26,7 +26,7 @@ function setup_vhost (dir_name) {
 
     var local_app = connect();
     local_app.use(connect.static(dir_path));
-    local_app.use(connect.directory(dir_path));
+    local_app.use(connect.directory(dir_path, dir_view_options));
 
     app.use(connect.vhost(domain, local_app));
     known_vhosts[dir_name] = true;

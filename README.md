@@ -13,7 +13,7 @@ For example if you have a directory `Projects` and in it:
     d----        2012-10-22     11:25            superbigle
     d----        2012-10-22     14:02            szywon
 
-then you'll have `http://superbigle.local:4000` and `http://szywon.local:4000` vhosts configured. `dirvhosts` automatically watches for changes in that directory.
+then you'll have `http://superbigle.local:4000` and `http://szywon.local:4000` vhosts configured. `dirvhost` automatically watches for changes in that directory.
 
 `dirvhost` works best if you have this line in your `/etc/hosts`:
 

@@ -31,6 +31,6 @@ Needs [NodeJS](http://nodejs.org). It's best served as a globally visible script
 
     dirvhost [dir_name [port]]
 
-# Licence
+## Licence
 
 MIT, See `COPYING` file.

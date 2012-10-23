@@ -6,7 +6,7 @@ var http    = require('http');
 var fs      = require('fs');
 var path    = require('path');
 
-var dir  = process.argv[2] || '.'
+var dir  = path.resolve(process.argv[2] || '.');
 var port = parseInt(process.argv[3], 10) || 4000;
 
 var log_format = ':method :status :req[Host]:url';
@@ -22,16 +22,25 @@ var known_vhosts = {};
 function setup_vhost (dir_name) {
   if (!known_vhosts[dir_name]) {
     var domain = dir_name.replace(/ /g, '-') + ".local";
-    var dir_path = path.resolve(dir + '/' + dir_name);
+    var dir_path = path.join(dir, dir_name);
 
-    var local_app = connect();
-    local_app.use(connect.static(dir_path));
-    local_app.use(connect.directory(dir_path, dir_view_options));
+    fs.stat(dir_path, function (err, stat) {
+      if (err) {
+        console.error(err.stack || err);
+        return;
+      }
 
-    app.use(connect.vhost(domain, local_app));
-    known_vhosts[dir_name] = true;
+      if (stat.isDirectory()) {
+        var local_app = connect();
+        local_app.use(connect.static(dir_path));
+        local_app.use(connect.directory(dir_path, dir_view_options));
 
-    console.log('Serving ' + dir_path + ' as http://' + domain + ':' + port);
+        app.use(connect.vhost(domain, local_app));
+        known_vhosts[dir_name] = true;
+
+        console.log('Serving ' + dir_path + ' as http://' + domain + ':' + port);
+      }
+    });
   }
 }
 

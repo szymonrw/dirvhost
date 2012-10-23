@@ -21,7 +21,7 @@ then you'll have `http://superbigle.local:4000` and `http://szywon.local:4000` v
 
 If your operating system doesn't support wild cards in `hosts` file (as on Windows) I recommend using local DNS proxy like [Acrylic](http://sourceforge.net/projects/acrylic/). Otherwise you have to add each host manually. (On Windows it's usually `C:\Windows\System32\Drivers\etc\hosts`.)
 
-# Installation & Usage
+## Installation & Usage
 
 Needs [NodeJS](http://nodejs.org). It's best served as a globally visible script, so install it with `-g` (on Windows that doesn't require administrator rights):
 

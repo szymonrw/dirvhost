@@ -1,6 +1,6 @@
 {
   "name":         "dirvhost",
-  "version":      "0.0.4",
+  "version":      "0.0.5",
   "decription":   "Serves all projects from a directory as static vhosts",
   "homepage":     "https://github.com/szywon/dirvhost",
   "bugs":         "https://github.com/szywon/dirvhost/issues",

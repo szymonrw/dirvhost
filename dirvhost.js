@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-'use strict';
 
 var connect = require('connect');
 var http    = require('http');
@@ -12,8 +11,9 @@ var port = parseInt(process.argv[3], 10) || 4000;
 var log_format = ':method :status :req[Host]:url';
 var dir_view_options = { hidden: true, icons: true };
 
-var app = connect()
+var app = connect();
 app.use(connect.logger(log_format));
+app.use(connect.compress());
 
 http.createServer(app).listen(port);
 

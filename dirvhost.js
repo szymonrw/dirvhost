@@ -23,26 +23,71 @@ function client_query_reload () {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
-      location.reload();
+      if (xhr.status === 200) {
+        location.reload();
+      }
     }
   };
   xhr.open('GET', '/__refresh', true);
   xhr.send();
 }
 
-function respond_on_change (dir_path, file_paths, res) {
+
+var refs = {};
+
+function respond_on_change (dir_path, ref, res) {
   var valid = true;
-  var watches = file_paths.map(function (file_path) {
-    console.log(path.join(dir_path, file_path));
+  var watches = refs[ref].map(function (file_path) {
     return fs.watch(path.join(dir_path, file_path), function () {
       if (!valid) return;
       valid = false;
+
+      watches.forEach(function (watch) {
+        watch.close();
+      });
+
+      delete refs[ref];
+
       res.writeHead(200, {
         'Content-Type': 'text/plain'
       });
       res.end();
     });
   });
+}
+
+function add_ref(ref, url) {
+  if (refs[ref]) {
+    refs[ref].push(url);
+  } else {
+    refs[ref] = [url];
+  }
+}
+
+function auto_reload (dir_path) {
+  return function (req, res, next) {
+    var ref;
+
+    if (req.headers.referer) {
+      ref = req.headers.referer.replace(/http\:\/\/[^\/]+/, '');
+    } else {
+      add_ref(req.url, req.url);
+      next();
+      return;
+    }
+
+    if (req.url === '/__refresh') {
+      respond_on_change(dir_path, ref, res);
+    } else if (req.url === '/__refresh.js') {
+      res.writeHead(200, {
+        'Content-Type': 'text/javascript'
+      });
+      res.end('(' + client_query_reload + ')();');
+    } else {
+      add_ref(ref, req.url);
+      next();
+    }
+  };
 }
 
 function setup_vhost (dir_name) {
@@ -56,40 +101,9 @@ function setup_vhost (dir_name) {
         return;
       }
 
-      var referers = {};
-
       if (stat.isDirectory()) {
         var local_app = connect();
-        local_app.use(function (req, res, next) {
-          var referer;
-          if (req.headers.referer) {
-            referer = req.headers.referer.replace(/http\:\/\/[^\/]+/, '');
-          }
-          console.log(referer, req.url);
-          if (req.url === '/__refresh') {
-            respond_on_change(dir_path, referers[referer], res);
-          } else if (req.url === '/__refresh.js') {
-            res.writeHead(200, {
-              'Content-Type': 'text/javascript'
-            });
-            res.end('(' + client_query_reload + ')();');
-          } else {
-            if (referer) {
-              if (!referers[referer]) {
-                referers[referer] = [req.url];
-              } else {
-                referers[referer].push(req.url);
-              }
-
-              if (!referers[req.url]) {
-                referers[req.url] = [req.url];
-              } else {
-                referers[req.url].push(req.url);
-              }
-            }
-            next();
-          }
-        });
+        local_app.use(auto_reload(dir_path));
         local_app.use(connect.static(dir_path));
         local_app.use(connect.directory(dir_path, dir_view_options));
 
